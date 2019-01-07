@@ -522,10 +522,12 @@
         },
 
         updateView: function() {
+            // 开启 [时:分:上下午] 选择
             if (this.timePicker) {
                 this.renderTimePicker('left');
                 this.renderTimePicker('right');
                 if (!this.endDate) {
+                    // $(el).find(selector) = el.querySelectorAll(selector);
                     this.container.find('.right .calendar-time select').attr('disabled', 'disabled').addClass('disabled');
                 } else {
                     this.container.find('.right .calendar-time select').removeAttr('disabled').removeClass('disabled');
@@ -1077,9 +1079,13 @@
             if (this.isShowing) return;
 
             // Create a click proxy that is private to this instance of datepicker, for unbinding
+            // $.proxy(fn, context); -> fn.bind(context); (IE9+)
+            // this._outsideClickProxy = (function(e) { this.outsideClick(e) }).bind(this);
+            // this._outsideClickProxy = function (e) { this.outsideClick(e) }.bind(this);
             this._outsideClickProxy = $.proxy(function(e) { this.outsideClick(e); }, this);
 
             // Bind global datepicker mousedown for hiding and
+            // $(el).on(eventName, eventHandler); = el.addEventListener(eventName, eventHandler);
             $(document)
               .on('mousedown.daterangepicker', this._outsideClickProxy)
               // also support mobile devices
@@ -1090,6 +1096,8 @@
               .on('focusin.daterangepicker', this._outsideClickProxy);
 
             // Reposition the picker if the window is resized while it's open
+            // window.addEventListener('resize.daterangepicker', function (e) { this.move(e); }.bind(this));
+            // TODO 自定义指令的意义是什么？
             $(window).on('resize.daterangepicker', $.proxy(function(e) { this.move(e); }, this));
 
             this.oldStartDate = this.startDate.clone();
@@ -1134,12 +1142,17 @@
             }
         },
 
+        // TODO click outside 是否可以封装为单独指令
         outsideClick: function(e) {
             var target = $(e.target);
             // if the page is clicked anywhere except within the daterangerpicker/button
             // itself then call this.hide()
             if (
                 // ie modal dialog fix
+                // closest: 从当前元素开始, 沿 DOM 树向上遍历，直到找到已应用选择器的一个匹配为止。返回包含零个或一个元素的 jQuery 对象
+                // this.container => https://jietu.qq.com/upload/index.html?image=http://jietu-10024907.file.myqcloud.com/khoqwrldaavmumwszaotjphwjnplttmv.jpg
+                // this.element => https://jietu.qq.com/upload/index.html?image=http://jietu-10024907.file.myqcloud.com/mzzivhjnudcpgwqtvganikrxfmypkjpr.jpg
+                // https://jietu.qq.com/upload/index.html?image=http://jietu-10024907.file.myqcloud.com/rvtbufgpyrnvultjnpujdjfafovgswzf.jpg
                 e.type == "focusin" ||
                 target.closest(this.element).length ||
                 target.closest(this.container).length ||
