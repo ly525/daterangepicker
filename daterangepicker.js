@@ -291,6 +291,14 @@
 
         //if no start/end dates set, check if an input element contains initial values
         if (typeof options.startDate === 'undefined' && typeof options.endDate === 'undefined') {
+            /**
+                // jquery match selector, demo: $(el).is('.my-class'); 
+                // native code:
+                var matches = function(el, selector) {
+                  return (el.matches || el.matchesSelector || el.msMatchesSelector || el.mozMatchesSelector || el.webkitMatchesSelector || el.oMatchesSelector).call(el, selector);
+                };
+                matches(el, '.my-class');
+            */
             if ($(this.element).is(':text')) {
                 var val = $(this.element).val(),
                     split = val.split(this.locale.separator);
