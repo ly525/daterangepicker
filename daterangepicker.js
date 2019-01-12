@@ -56,7 +56,9 @@
       this.alwaysShowCalendars = false;
       this.ranges = {};
 
+      // api: this.element => <input type="text" class="form-control" id="startDate" value="07/01/2015">
       this.opens = 'right';
+      // api (pull-right) control the arrow position relative to input box: pull-right -> right, pull-left -> left
       if (this.element.hasClass('pull-right'))
           this.opens = 'left';
 
@@ -152,6 +154,7 @@
           if (typeof options.locale.weekLabel === 'string')
             this.locale.weekLabel = options.locale.weekLabel;
 
+          // TODO ??
           if (typeof options.locale.customRangeLabel === 'string'){
               //Support unicode chars in the custom range name.
               var elem = document.createElement('textarea');
@@ -230,6 +233,7 @@
       if (typeof options.buttonClasses === 'object')
           this.buttonClasses = options.buttonClasses.join(' ');
 
+      // 年份和月份支持下拉选择
       if (typeof options.showDropdowns === 'boolean')
           this.showDropdowns = options.showDropdowns;
 
@@ -239,6 +243,7 @@
       if (typeof options.maxYear === 'number')
           this.maxYear = options.maxYear;
 
+      // ranges 中是否显示 最下面的 Custom Range
       if (typeof options.showCustomRangeLabel === 'boolean')
           this.showCustomRangeLabel = options.showCustomRangeLabel;
 
@@ -248,6 +253,7 @@
               this.endDate = this.startDate.clone();
       }
 
+      // 显示小时选择器
       if (typeof options.timePicker === 'boolean')
           this.timePicker = options.timePicker;
 
@@ -1041,12 +1047,21 @@
           var parentRightEdge = $(window).width();
           if (!this.parentEl.is('body')) {
               parentOffset = {
+                  /**
+                   * 
+                    var rect = el.getBoundingClientRect();
+                    {
+                        top: rect.top + document.body.scrollTop,
+                        left: rect.left + document.body.scrollLeft
+                    }
+                   */
                   top: this.parentEl.offset().top - this.parentEl.scrollTop(),
                   left: this.parentEl.offset().left - this.parentEl.scrollLeft()
               };
               parentRightEdge = this.parentEl[0].clientWidth + this.parentEl.offset().left;
           }
 
+          // $(el).outerHeight => el.offsetHeight;
           if (this.drops == 'up')
               containerTop = this.element.offset().top - this.container.outerHeight() - parentOffset.top;
           else
@@ -1057,7 +1072,7 @@
               this.container.css({
                   top: containerTop,
                   right: parentRightEdge - this.element.offset().left - this.element.outerWidth(),
-                  left: 'auto'
+                  left: 'auto' // TIDO right auto ????
               });
               if (this.container.offset().left < 0) {
                   this.container.css({
@@ -1084,6 +1099,7 @@
                   left: this.element.offset().left - parentOffset.left,
                   right: 'auto'
               });
+              // no jQuery: $(el).outerWidth => el.offsetWidth
               if (this.container.offset().left + this.container.outerWidth() > $(window).width()) {
                   this.container.css({
                       left: 'auto',
@@ -1534,6 +1550,7 @@
       },
 
       remove: function() {
+          // no jQuery: $(el).remove() => el.parentNode.removeChild(el);
           this.container.remove();
           this.element.off('.daterangepicker');
           this.element.removeData();
