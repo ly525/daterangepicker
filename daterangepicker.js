@@ -266,12 +266,16 @@
       if (typeof options.timePicker24Hour === 'boolean')
           this.timePicker24Hour = options.timePicker24Hour;
 
+      //  Hide the apply and cancel buttons, and automatically apply a new date range as soon as two dates are clicked.
       if (typeof options.autoApply === 'boolean')
           this.autoApply = options.autoApply;
 
+      // Indicates whether the date range picker should
+      // automatically update the value of the <input> element it's attached to at initialization and when the selected dates change.
       if (typeof options.autoUpdateInput === 'boolean')
           this.autoUpdateInput = options.autoUpdateInput;
 
+      // 左右两个 Canlendar 是否联动。比如左右选择了 1月，右边自动变为 2月。否则，两者独立
       if (typeof options.linkedCalendars === 'boolean')
           this.linkedCalendars = options.linkedCalendars;
 
@@ -281,13 +285,17 @@
       if (typeof options.isCustomDate === 'function')
           this.isCustomDate = options.isCustomDate;
 
+      // 是够只有在 Custom Ranges 的时候才显示 日历
       if (typeof options.alwaysShowCalendars === 'boolean')
           this.alwaysShowCalendars = options.alwaysShowCalendars;
 
+      // 一周的第一天是周一、周末、还是 周六 ？wiki https://zh.wikipedia.org/wiki/%E6%98%9F%E6%9C%9F%E4%B8%AD%E7%9A%84%E6%97%A5%E5%AD%90#%E6%AF%8F%E5%80%8B%E6%98%9F%E6%9C%9F%E7%9A%84%E7%AC%AC%E4%B8%80%E5%A4%A9
+      // ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
       // update day names order to firstDay
       if (this.locale.firstDay != 0) {
           var iterator = this.locale.firstDay;
           while (iterator > 0) {
+              // shift() 方法从数组中删除第一个元素，并返回该元素的值。此方法更改数组的长度。
               this.locale.daysOfWeek.push(this.locale.daysOfWeek.shift());
               iterator--;
           }
@@ -326,17 +334,18 @@
       }
 
       if (typeof options.ranges === 'object') {
-          for (range in options.ranges) {
-
-              if (typeof options.ranges[range][0] === 'string')
-                  start = moment(options.ranges[range][0], this.locale.format);
+          var ranges = options.ranges;
+          for (range in ranges) {
+              // TODO 这边需要讨论，moment(string, format) 这时候，将这个时间转成什么时区的时间了？？？
+              if (typeof ranges[range][0] === 'string')
+                  start = moment(ranges[range][0], this.locale.format);
               else
-                  start = moment(options.ranges[range][0]);
+                  start = moment(ranges[range][0]);
 
-              if (typeof options.ranges[range][1] === 'string')
-                  end = moment(options.ranges[range][1], this.locale.format);
+              if (typeof ranges[range][1] === 'string')
+                  end = moment(ranges[range][1], this.locale.format);
               else
-                  end = moment(options.ranges[range][1]);
+                  end = moment(ranges[range][1]);
 
               // If the start or end date exceed those allowed by the minDate or maxSpan
               // options, shorten the range to the allowable period.
@@ -371,6 +380,7 @@
               list += '<li data-range-key="' + this.locale.customRangeLabel + '">' + this.locale.customRangeLabel + '</li>';
           }
           list += '</ul>';
+          // no jQuery: $(parent).prepend(el); => parent.insertBefore(el, parent.firstChild);
           this.container.find('.ranges').prepend(list);
       }
 
@@ -1048,7 +1058,7 @@
           if (!this.parentEl.is('body')) {
               parentOffset = {
                   /**
-                   * 
+                   *
                     var rect = el.getBoundingClientRect();
                     {
                         top: rect.top + document.body.scrollTop,
